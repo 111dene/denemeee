@@ -1,13 +1,13 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
-using ProductApp.Shared.Events;
+using ProductApp.Domain.Aggregates.Product.DomainEvents;
 using ProductEventListener.Domain.Entities;
 using ProductEventListener.Infrastructure.Persistance;
 using ProductEventListener.Infrastructure.Services;
 
 namespace ProductEventListener.Infrastructure.Consumers
 {
-    public class ProductCreatedConsumer : IConsumer<CreateProductEvent>
+    public class ProductCreatedConsumer : IConsumer<AddProductEvent>
     {
         private readonly EventLogDbContext _context;
         private readonly IProductService _productService;
@@ -23,7 +23,7 @@ namespace ProductEventListener.Infrastructure.Consumers
             _logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<CreateProductEvent> context)
+        public async Task Consume(ConsumeContext<AddProductEvent> context)
         {
             var productId = context.Message.ProductId;
             _logger.LogInformation("Ürün ID: {ProductId} için event alındı", productId);

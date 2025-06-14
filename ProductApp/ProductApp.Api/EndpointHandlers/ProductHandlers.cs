@@ -63,7 +63,7 @@ public static class ProductHandlers
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var query = ProductStockCheckQuery.Create(productId);
+        var query = CheckProductStockQuery.Create(productId);
         var result = await mediator.Send(query, cancellationToken);
 
         return TypedResults.Ok(result);

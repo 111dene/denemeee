@@ -32,7 +32,8 @@ namespace ProductEventListener.Infrastructure.Extensions
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                   
+                    cfg.Host("localhost");
+                    cfg.ConfigureEndpoints(context);
                 });
             });
 

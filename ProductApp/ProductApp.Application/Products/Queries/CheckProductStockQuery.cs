@@ -4,22 +4,22 @@ using ProductApp.Application.Products.Outputs;
 
 namespace ProductApp.Application.Products.Queries;
 
-public sealed class ProductStockCheckQuery : IRequest<ProductStockCheckOutput>
+public sealed class CheckProductStockQuery : IRequest<ProductStockCheckOutput>
 {
     public Guid ProductId { get; }
 
-    private ProductStockCheckQuery(Guid productId)
+    private CheckProductStockQuery(Guid productId)
     {
         ProductId = productId;
     }
 
-    public static ProductStockCheckQuery Create(Guid productId)
+    public static CheckProductStockQuery Create(Guid productId)
     {
-        return new ProductStockCheckQuery(productId);
+        return new CheckProductStockQuery(productId);
     }
 }
 
-public sealed class ProductStockCheckQueryHandler : IRequestHandler<ProductStockCheckQuery, ProductStockCheckOutput>
+public sealed class ProductStockCheckQueryHandler : IRequestHandler<CheckProductStockQuery, ProductStockCheckOutput>
 {
     
     private readonly IProductReadRepository productReadRepository;
@@ -31,7 +31,7 @@ public sealed class ProductStockCheckQueryHandler : IRequestHandler<ProductStock
         this.productReadRepository = productReadRepository;
     }
 
-    public async Task<ProductStockCheckOutput> Handle(ProductStockCheckQuery request, CancellationToken cancellationToken)
+    public async Task<ProductStockCheckOutput> Handle(CheckProductStockQuery request, CancellationToken cancellationToken)
     {
         var product = await productReadRepository.GetByIdAsync(request.ProductId, cancellationToken);
         
