@@ -1,5 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using ProductApp.Api.EndpointMappings;
+using ProductApp.Api.ExceptionHandlers;
 using ProductApp.Api.ServiceRegistrations;
 using ProductApp.Application.Products.Commands;
 using ProductApp.Infrastructure.Extensions;
@@ -17,12 +19,16 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // API services
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Messaging services register
 builder.Services.RegisterMessagingServices(builder.Configuration);
+
+// Exception handlers
+builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+builder.Services.AddExceptionHandler<DefaultExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -34,6 +40,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.MapControllers();
+
+// Exception handling middleware
+app.UseExceptionHandler();
+
+// Register endpoints
+app.RegisterProductEndpoints();
 
 app.Run();
