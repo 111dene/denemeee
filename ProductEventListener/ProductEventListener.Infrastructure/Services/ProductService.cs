@@ -2,50 +2,49 @@
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace ProductEventListener.Infrastructure.Services;
-
-public class ProductService : IProductService
+namespace ProductEventListener.Infrastructure.Services
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<ProductService> _logger;
-    private readonly string _productApiBaseUrl;
-
-    public ProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ProductService> logger)//bu service product apiye bağlanır ve stok kontrolü yapar
+    public class ProductService : IProductService
     {
-        _httpClient = httpClient;// HttpClient, Product API ile iletişim kurmak için kullanılır
-        _logger = logger;// ILogger, loglama işlemleri için kullanılır
-        _productApiBaseUrl = configuration["ProductApi:BaseUrl"] ?? "https://localhost:7138";// Product API'nin base URL'si, appsettings.json'dan alınır
-    }
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<ProductService> _logger;
+        private readonly string _productApiBaseUrl;
 
-    public async Task<ProductStockCheckResult> CheckStockAsync(Guid productId, CancellationToken cancellationToken = default)
-    {
-        try
+        public ProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ProductService> logger)
         {
-            _logger.LogInformation("Ürün ID: {ProductId} için stok kontrol ediliyor", productId);
+            _httpClient = httpClient;
+            _logger = logger;
+            _productApiBaseUrl = configuration["ProductApi:BaseUrl"] ?? "https://localhost:7138";
+        }
 
-            var response = await _httpClient.GetAsync($"{_productApiBaseUrl}/api/Products/CheckStock/{productId}", cancellationToken);// Product API'den stok kontrolü için istek gönderilir
-
-            if (response.IsSuccessStatusCode)
+        public async Task<ProductStockCheckResult> CheckStockAsync(Guid productId, CancellationToken cancellationToken = default)
+        {
+            try
             {
-                var content = await response.Content.ReadAsStringAsync(cancellationToken);// response içeriği okunur
-                var result = JsonSerializer.Deserialize<ProductStockCheckResult>(content, new JsonSerializerOptions//json response içeriği ProductStockCheckResult modeline deserialize edilir
+                var response = await _httpClient.GetAsync(
+                    $"{_productApiBaseUrl}/api/Products/CheckStock/{productId}",
+                    cancellationToken);
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    PropertyNameCaseInsensitive = true// JSON'daki property isimleri büyük/küçük harfe duyarsız olarak deserialize edilir
+                    _logger.LogWarning("Stok kontrolü başarısız. ProductId: {ProductId}, StatusCode: {StatusCode}",
+                        productId, response.StatusCode);
+                    return new ProductStockCheckResult { ProductId = productId, Exists = false };
+                }
+
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                var result = JsonSerializer.Deserialize<ProductStockCheckResult>(content, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
                 });
 
-                _logger.LogInformation("Ürün ID: {ProductId} stok kontrolü tamamlandı. Stokta Var: {HasStock}", productId, result?.HasStock);
-                return result ?? new ProductStockCheckResult { ProductId = productId, Exists = false, HasStock = false };
+                return result ?? new ProductStockCheckResult { ProductId = productId, Exists = false };
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogWarning("Ürün ID: {ProductId} için stok kontrolü başarısız. Durum Kodu: {StatusCode}", productId, response.StatusCode);
-                return new ProductStockCheckResult { ProductId = productId, Exists = false, HasStock = false };
+                _logger.LogError(ex, "Stok kontrolünde hata. ProductId: {ProductId}", productId);
+                return new ProductStockCheckResult { ProductId = productId, Exists = false };
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "rün ID: {ProductId} için stok kontrolünde hata oluştu", productId);
-            return new ProductStockCheckResult { ProductId = productId, Exists = false, HasStock = false };
         }
     }
 }

@@ -22,8 +22,7 @@ public static class ProductHandlers
 
         await mediator.Send(command, cancellationToken);
 
-        var response = new CreateProductResponse { Message = "Ürün başarıyla oluşturuldu" };
-        return TypedResults.Ok(response);
+        return TypedResults.Ok(new CreateProductResponse { Message = "Ürün başarıyla oluşturuldu" });
     }
 
     public static async Task<Ok<GetProductsQueryOutput>> GetProductList(
@@ -32,17 +31,11 @@ public static class ProductHandlers
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var request = new GetProductsRequest
-        {
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
-
+        var request = new GetProductsRequest { PageNumber = pageNumber, PageSize = pageSize };
         var queryInput = ProductEndpointMappings.ToGetQueryInput(request);
         var query = GetProductsQuery.Create(queryInput);
 
         var result = await mediator.Send(query, cancellationToken);
-
         return TypedResults.Ok(result);
     }
 
@@ -56,14 +49,12 @@ public static class ProductHandlers
 
         var newStockAmount = await mediator.Send(command, cancellationToken);
 
-        var response = new AddProductResponse
+        return TypedResults.Ok(new AddProductResponse
         {
             Message = "Stok başarıyla eklendi",
             ProductName = request.ProductName,
             NewStockAmount = newStockAmount
-        };
-
-        return TypedResults.Ok(response);
+        });
     }
 
     public static async Task<Ok<ProductStockCheckOutput>> CheckStock(

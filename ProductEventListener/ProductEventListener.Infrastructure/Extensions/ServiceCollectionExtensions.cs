@@ -6,55 +6,37 @@ using ProductEventListener.Infrastructure.Consumers;
 using ProductEventListener.Infrastructure.Persistance;
 using ProductEventListener.Infrastructure.Services;
 
-namespace ProductEventListener.Infrastructure.Extensions;
-
-public static class ServiceCollectionExtensions
+namespace ProductEventListener.Infrastructure.Extensions
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static class ServiceCollectionExtensions
     {
-        // Database
-        services.AddDbContext<EventLogDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Database
+            services.AddDbContext<EventLogDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-        // HTTP Client with certificate bypass for development
-        services.AddHttpClient<IProductService, ProductService>(client =>
-        {
-            client.Timeout = TimeSpan.FromSeconds(30);
-        }).ConfigurePrimaryHttpMessageHandler(() =>
-        {
-            return new HttpClientHandler()
+            // HTTP Client
+            services.AddHttpClient<IProductService, ProductService>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(30);
+            }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
-        });
-        //http client ile product apiye bağlanır ve stok kontrolü yapılır
+            });
 
-        // MassTransit configuration
-        services.AddMassTransit(x =>
-        {
-            x.AddConsumer<ProductCreatedConsumer>();
-
-            x.UsingRabbitMq((context, cfg) =>
+            // MassTransit
+            services.AddMassTransit(x =>
             {
-                cfg.Host("localhost", "/", h =>
+                x.AddConsumer<ProductCreatedConsumer>();
+
+                x.UsingRabbitMq((context, cfg) =>
                 {
-                    h.Username("guest");
-                    h.Password("guest");
-                });
-
-
-
-                cfg.ReceiveEndpoint("product-event-listener-queue", e =>
-                {
-                    e.ConfigureConsumer<ProductCreatedConsumer>(context);
-
-                    
-                    e.UseMessageRetry(r => r.Intervals(100, 200, 500, 800, 1000));
-
+                   
                 });
             });
-        });
 
-        return services;
+            return services;
+        }
     }
 }
