@@ -9,19 +9,15 @@ public static class ProductEndpointMapping
         var productEndpoints = endpointRouteBuilder.MapGroup("/api/products");
 
         productEndpoints.MapPost("/CreateProduct", ProductHandlers.CreateProduct)
-            .WithName("CreateProduct")
-            .WithSwagger;
+            .WithName("CreateProduct");
 
         productEndpoints.MapGet("/GetProductList", ProductHandlers.GetProductList)
-            .WithName("GetProductList")
-            .WithOpenApi();
+            .WithName("GetProductList");
 
         productEndpoints.MapPost("/AddProduct", ProductHandlers.AddProduct)
-            .WithName("AddProduct")
-            .WithOpenApi();
+            .WithName("AddProduct");
 
         productEndpoints.MapGet("/CheckStock/{productId:guid}", ProductHandlers.CheckStock)
-            .WithName("CheckStock")
-            .WithOpenApi();
+            .WithName("CheckStock");
     }
 }
