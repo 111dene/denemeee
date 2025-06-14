@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ProductApp.Application.Common;
+﻿using ProductApp.Application.Common;
 using ProductApp.Domain.Aggregates.Product;
 
 namespace ProductApp.Infrastructure.Persistance.EntityFrameworkCore.Products

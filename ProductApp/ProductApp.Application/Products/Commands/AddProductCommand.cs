@@ -2,7 +2,9 @@
 using MediatR;
 using ProductApp.Application.Common;
 using ProductApp.Application.Products.Inputs;
-using ProductApp.Shared.Events;
+using ProductApp.Domain.Aggregates.Product.DomainEvents;
+using ProductApp.Domain.Aggregates.Product.Exceptions;
+
 
 namespace ProductApp.Application.Products.Commands;
 
@@ -24,18 +26,15 @@ public class AddProductCommand : IRequest<int>
 public sealed class AddProductCommandHandler : IRequestHandler<AddProductCommand, int>//bağımlılıkları alır ve komutu işler
 {
     private readonly IUnitOfWork unitOfWork;
-    private readonly IProductRepository productRepository;
     private readonly IPublishEndpoint publishEndpoint;
     private readonly IProductReadRepository productReadRepository;
 
     public AddProductCommandHandler(// Constructor injection ile bağımlılıklar alınıyor.
         IUnitOfWork unitOfWork,
-        IProductRepository productRepository,
         IProductReadRepository productReadRepository,
         IPublishEndpoint publishEndpoint)
     {
         this.unitOfWork = unitOfWork;
-        this.productRepository = productRepository;
         this.publishEndpoint = publishEndpoint;
         this.productReadRepository = productReadRepository;
     }
@@ -47,7 +46,7 @@ public sealed class AddProductCommandHandler : IRequestHandler<AddProductCommand
 
         if (product == null)
         {
-            throw new ArgumentException($"'{request.Input.ProductName}' isimli ürün bulunamadı");
+            throw new ProductNotFoundException();
         }
 
         
@@ -57,7 +56,7 @@ public sealed class AddProductCommandHandler : IRequestHandler<AddProductCommand
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         
-        var createProductEvent = new CreateProductEvent
+        var createProductEvent = new AddProductEvent
         {
             ProductId = product.Id,
             OccurredOn = DateTime.UtcNow

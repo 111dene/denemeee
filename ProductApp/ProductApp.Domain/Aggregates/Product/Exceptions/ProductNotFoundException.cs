@@ -2,7 +2,7 @@
 {
     public class ProductNotFoundException : Exception
     {
-        public ProductNotFoundException(Guid id)
-            : base($"ID: {id} olan ürün bulunamadı") { }
+        public ProductNotFoundException()
+            : base("'ürün bulunamadı") { }
     }
 }

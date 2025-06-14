@@ -18,9 +18,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\ProductEventListener.Domain\ProductEventListener.Domain.csproj" />
 	</ItemGroup>
-	
-	
-	<ItemGroup>
-	  <Folder Include="Events\" />
-	</ItemGroup>
 </Project>

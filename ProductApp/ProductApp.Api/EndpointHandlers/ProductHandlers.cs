@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProductApp.Api.EndpointMappings;
+using ProductApp.Api.Models.Mappers;
 using ProductApp.Api.Models.Requests;
 using ProductApp.Api.Models.Response;
 using ProductApp.Application.Products.Commands;
@@ -17,7 +18,7 @@ public static class ProductHandlers
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var commandInput = ProductEndpointMappings.ToCreateCommandInput(request);
+        var commandInput = ProductHandlersMapper.ToCreateCommandInput(request);
         var command = CreateProductCommand.Create(commandInput);
 
         await mediator.Send(command, cancellationToken);
@@ -32,7 +33,7 @@ public static class ProductHandlers
         CancellationToken cancellationToken)
     {
         var request = new GetProductsRequest { PageNumber = pageNumber, PageSize = pageSize };
-        var queryInput = ProductEndpointMappings.ToGetQueryInput(request);
+        var queryInput = ProductHandlersMapper.ToGetQueryInput(request);
         var query = GetProductsQuery.Create(queryInput);
 
         var result = await mediator.Send(query, cancellationToken);
@@ -44,7 +45,7 @@ public static class ProductHandlers
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var commandInput = ProductEndpointMappings.ToAddCommandInput(request);
+        var commandInput = ProductHandlersMapper.ToAddCommandInput(request);
         var command = AddProductCommand.Create(commandInput);
 
         var newStockAmount = await mediator.Send(command, cancellationToken);
