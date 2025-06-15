@@ -33,6 +33,19 @@ public static class ProductHandlersMapper
             PageSize = request.PageSize
         };
     }
+
+    public static ProductSaleCommandInput ToProcessSaleCommandInput(ProcessSaleRequest request)
+    {
+        return new ProcessSaleCommandInput
+        {
+            OrderId = request.OrderId,
+            Items = request.Items.Select(i => new SaleItemInput
+            {
+                ProductId = i.ProductId,
+                Quantity = i.Quantity
+            }).ToList()
+        };
+    }
 }
 
 //API request modelleri ile uygulama katmanı modelleri (command ve query inputları) arasındaki dönüşümü yapmak için kullanılan bir mapping sınıfıdır.

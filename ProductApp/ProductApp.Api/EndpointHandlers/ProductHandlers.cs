@@ -68,4 +68,28 @@ public static class ProductHandlers
 
         return TypedResults.Ok(result);
     }
+
+    public static async Task<Ok<ProcessSaleResponse>> ProcessSale(
+        [FromBody] ProcessSaleRequest request,
+        [FromServices] IMediator mediator,
+        CancellationToken cancellationToken)
+    {
+        var commandInput = ProductHandlersMapper.ToProcessSaleCommandInput(request);
+        var command = ProcessSaleCommand.Create(commandInput);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        return TypedResults.Ok(new ProcessSaleResponse
+        {
+            Message = "Sale processed successfully",
+            OrderId = result.OrderId,
+            Results = result.Results.Select(r => new SaleResultItem
+            {
+                ProductId = r.ProductId,
+                ProductName = r.ProductName,
+                SoldQuantity = r.SoldQuantity,
+                RemainingStock = r.RemainingStock
+            }).ToList()
+        });
+    }
 }

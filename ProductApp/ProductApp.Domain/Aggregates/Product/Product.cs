@@ -39,6 +39,16 @@ public sealed class Product : IAggregateRoot
 
         Stock += quantity;
     }
+    public void ReduceStock(int quantity)
+    {
+        if (quantity <= 0)
+            throw new InvalidOperationException("Reduction quantity must be positive");
+
+        if (Stock < quantity)
+            throw new InvalidOperationException($"Insufficient stock. Available: {Stock}, Requested: {quantity}");
+
+        Stock -= quantity;
+    }
 }
 
 public sealed class ProductCreateModel// Bu model, dışarıdan gelen veriyi temsil eder ve Product nesnesi oluşturulurken kullanılır

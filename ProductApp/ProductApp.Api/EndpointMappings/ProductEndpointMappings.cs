@@ -19,5 +19,7 @@ public static class ProductEndpointMappings
 
         productEndpoints.MapGet("/CheckStock/{productId:guid}", ProductHandlers.CheckStock)
             .WithName("CheckStock");
+        productEndpoints.MapPost("/ProcessSale", ProductHandlers.ProcessSale)
+            .WithName("ProcessSale");
     }
 }
