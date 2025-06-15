@@ -49,7 +49,7 @@ public class NotificationProcessingService : INotificationProcessingService
             if (productMerchant.LastNotifiedSequence > notification.SequenceNumber)
             {
                 _logger.LogInformation(
-                    "Skipping outdated notification. Product: {ProductId}, Current Sequence: {CurrentSeq}, Last Notified: {LastSeq}",
+                    "Eski bildirim atlanıyor. Ürün: {ProductId}, Mevcut Sıra: {CurrentSeq}, Son Bildirim: {LastSeq}",
                     notification.ProductId, notification.SequenceNumber, productMerchant.LastNotifiedSequence);
                 continue;
             }
@@ -102,18 +102,18 @@ public class NotificationProcessingService : INotificationProcessingService
     {
         try
         {
-            var subject = $"Stock Update - {email.ProductName}";
+            var subject = $"Stok Güncellemesi - {email.ProductName}";
             var body = $@"
-                Dear {email.MerchantName},
+                Sayın {email.MerchantName},
                 
-                Stock update for your product: {email.ProductName}
-                Remaining Stock: {email.RemainingStock}
+                Ürününüz için stok güncellemesi: {email.ProductName}
+                Kalan Stok: {email.RemainingStock}
                 
-                Sequence: {email.SequenceNumber}
-                Time: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}
+                Sıra: {email.SequenceNumber}
+                Zaman: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}
                 
-                Best regards,
-                Stock Notification System
+                Saygılarımızla,
+                Stok Bildirim Sistemi
             ";
 
             await _emailService.SendEmailAsync(email.MerchantEmail, subject, body);
@@ -122,7 +122,7 @@ public class NotificationProcessingService : INotificationProcessingService
             email.SentAt = DateTime.UtcNow;
             email.LastError = null;
 
-            _logger.LogInformation("Email sent successfully to {Email} for Product {ProductId}",
+            _logger.LogInformation("E-posta başarıyla gönderildi: {Email}, Ürün: {ProductId}",
                 email.MerchantEmail, email.ProductId);
         }
         catch (Exception ex)
@@ -131,7 +131,7 @@ public class NotificationProcessingService : INotificationProcessingService
             email.LastError = ex.Message;
             email.NextRetryAt = DateTime.UtcNow.AddMinutes(Math.Pow(2, email.RetryCount)); // Exponential backoff
 
-            _logger.LogError(ex, "Failed to send email to {Email}. Retry count: {RetryCount}",
+            _logger.LogError(ex, "E-posta gönderiminde hata: {Email}. Deneme sayısı: {RetryCount}",
                 email.MerchantEmail, email.RetryCount);
         }
 

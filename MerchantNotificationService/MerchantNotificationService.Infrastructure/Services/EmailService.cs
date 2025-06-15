@@ -13,16 +13,16 @@ public class EmailService : IEmailService
 
     public async Task SendEmailAsync(string to, string subject, string body)
     {
-        // Simüle edilmiş email gönderimi
-        await Task.Delay(100); // Network delay simulation
+       
+        await Task.Delay(100);
 
         // Gerçek implementasyonda SMTP/SendGrid/AWS SES kullanılır
-        _logger.LogInformation("📧 EMAIL SENT - To: {To}, Subject: {Subject}", to, subject);
+        _logger.LogInformation("E-POSTA GÖNDERİLDİ - Kime: {To}, Konu: {Subject}", to, subject);
 
         // Hata simülasyonu (testing için)
         if (to.Contains("fail"))
         {
-            throw new Exception("Simulated email failure");
+            throw new Exception("Simüle edilmiş e-posta hatası");
         }
     }
 }

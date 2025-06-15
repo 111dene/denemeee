@@ -1,6 +1,8 @@
 ﻿using MassTransit;
+using MerchantNotificationService.Infrastructure.BackgroundServices;
 using MerchantNotificationService.Infrastructure.Consumers;
 using MerchantNotificationService.Infrastructure.Persistance;
+using MerchantNotificationService.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,12 @@ namespace MerchantNotificationService.Infrastructure.Extensions
             services.AddDbContext<NotificationDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+            // Services
+            services.AddScoped<INotificationProcessingService, NotificationProcessingService>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            // Background Services
+            services.AddHostedService<NotificationProcessor>();
 
             // MassTransit
             services.AddMassTransit(x =>
