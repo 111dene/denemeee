@@ -2,13 +2,13 @@
 using MediatR;
 using ProductApp.Application.Common;
 using ProductApp.Application.Products.Inputs;
+using ProductApp.Application.Products.Outputs;
 using ProductApp.Domain.Aggregates.Product.DomainEvents;
 using ProductApp.Domain.Aggregates.Product.Exceptions;
 
-
 namespace ProductApp.Application.Products.Commands;
 
-public class SaleProductCommand : IRequest<SaleProductResult>
+public class SaleProductCommand : IRequest<SaleProductOutput> // SaleProductResult değil, SaleProductOutput olmalı
 {
     public SaleProductCommandInput Input { get; }
 
@@ -23,21 +23,8 @@ public class SaleProductCommand : IRequest<SaleProductResult>
     }
 }
 
-public class SaleProductResult
-{
-    public string OrderId { get; set; }
-    public List<SaleItem> Results { get; set; } = new();
-}
 
-public class SaleItem
-{
-    public Guid ProductId { get; set; }
-    public string ProductName { get; set; }
-    public int SoldQuantity { get; set; }
-    public int RemainingStock { get; set; }
-}
-
-public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductCommand, SaleProductResult>
+public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductCommand, SaleProductOutput>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly IProductReadRepository productReadRepository;
@@ -53,9 +40,9 @@ public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductComma
         this.publishEndpoint = publishEndpoint;
     }
 
-    public async Task<SaleProductResult> Handle(SaleProductCommand request, CancellationToken cancellationToken)
+    public async Task<SaleProductOutput> Handle(SaleProductCommand request, CancellationToken cancellationToken)
     {
-        var result = new SaleProductResult
+        var result = new SaleProductOutput
         {
             OrderId = request.Input.OrderId
         };
@@ -71,13 +58,13 @@ public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductComma
 
             if (product.Stock < item.Quantity)
             {
-                throw new InvalidOperationException($"Insufficient stock for product {product.Name}. Available: {product.Stock}, Requested: {item.Quantity}");
+                throw new InvalidOperationException($"Ürün {product.Name} için yetersiz stok. Mevcut: {product.Stock}, İstenen: {item.Quantity}");
             }
 
             // Stok düşür
-            product.ReduceStock(item.Quantity); // Bu metodu Product domain'ine ekleyeceğiz
+            product.ReduceStock(item.Quantity);
 
-            result.Results.Add(new SaleItem
+            result.Items.Add(new SaleProductItemOutput
             {
                 ProductId = product.Id,
                 ProductName = product.Name,
@@ -85,7 +72,7 @@ public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductComma
                 RemainingStock = product.Stock
             });
 
-            // Stock düştü eventi yayınla
+            // Event yayınla
             var stockReducedEvent = new ReduceStockEvent
             {
                 ProductId = product.Id,
@@ -94,7 +81,7 @@ public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductComma
                 RemainingStock = product.Stock,
                 OrderId = request.Input.OrderId,
                 OccurredOn = DateTime.UtcNow,
-                SequenceNumber = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() // Sıralama için
+                SequenceNumber = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
 
             await publishEndpoint.Publish(stockReducedEvent, cancellationToken);

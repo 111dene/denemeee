@@ -15,7 +15,6 @@ public static class ProductHandlersMapper
         };
     }
 
-
     public static AddProductCommandInput ToAddCommandInput(AddProductRequest request)
     {
         return new AddProductCommandInput

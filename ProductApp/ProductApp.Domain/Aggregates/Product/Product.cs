@@ -27,7 +27,7 @@ public sealed class Product : IAggregateRoot
         Stock = stock;
     }
 
-    public static Product Create(ProductCreateModel model)// Bu metot, dışarıdan gelen modelden yeni bir Product nesnesi oluşturur
+    public static Product Create(CreateProductModel model)// Bu metot, dışarıdan gelen modelden yeni bir Product nesnesi oluşturur
     {
         var price = new Money(model.Price);
         return new Product(model.Name, price, model.Stock);
@@ -42,18 +42,11 @@ public sealed class Product : IAggregateRoot
     public void ReduceStock(int quantity)
     {
         if (quantity <= 0)
-            throw new InvalidOperationException("Reduction quantity must be positive");
+            throw new InvalidOperationException("Düşürülecek miktar pozitif olmalıdır.");
 
         if (Stock < quantity)
-            throw new InvalidOperationException($"Insufficient stock. Available: {Stock}, Requested: {quantity}");
+            throw new InvalidOperationException($"Yetersiz stok. Mevcut: {Stock}, İstenen: {quantity}");
 
         Stock -= quantity;
     }
-}
-
-public sealed class ProductCreateModel// Bu model, dışarıdan gelen veriyi temsil eder ve Product nesnesi oluşturulurken kullanılır
-{
-    public string Name { get; set; }
-    public decimal Price { get; set; }//Money bir domain value object. Domain katmanının dışına çıkmamalı! o yüzden burada decimal olarak tanımlıyoruz
-    public int Stock { get; set; }
 }

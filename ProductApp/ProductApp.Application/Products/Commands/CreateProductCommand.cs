@@ -2,6 +2,7 @@
 using ProductApp.Application.Common;
 using ProductApp.Application.Products.Inputs;
 using ProductApp.Domain.Aggregates.Product;
+using ProductApp.Domain.Aggregates.Product.Models;
 using ProductApp.Domain.Aggregates.Product.Exceptions;
 
 namespace ProductApp.Application.Products.Commands;
@@ -47,14 +48,14 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
         }
 
         // Domain validation ProductCreateModel içinde yapılacak
-        var productCreateModel = new ProductCreateModel//inputtan gelen verilerle yeni bir ProductCreateModel oluşturuyoruz
+        var createProductModel = new CreateProductModel//inputtan gelen verilerle yeni bir ProductCreateModel oluşturuyoruz
         {
             Name = request.Input.Name,
             Price = request.Input.Price,
             Stock = request.Input.Stock
         };
 
-        var product = Product.Create(productCreateModel);//domain modelini oluuruyoruz. Product sınıfının Create metodu ile ProductCreateModel'i kullanarak yeni bir Product nesnesi oluşturuyoruz.
+        var product = Product.Create(createProductModel);//domain modelini oluuruyoruz. Product sınıfının Create metodu ile ProductCreateModel'i kullanarak yeni bir Product nesnesi oluşturuyoruz.
 
         await productRepository.CreateAsync(product, cancellationToken);//db ye kaydet için repositorye gönderiyoruz
         await unitOfWork.SaveChangesAsync(cancellationToken);//tüm değişiklikleri kaydet

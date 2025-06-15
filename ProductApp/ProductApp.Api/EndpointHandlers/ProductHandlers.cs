@@ -69,21 +69,21 @@ public static class ProductHandlers
         return TypedResults.Ok(result);
     }
 
-    public static async Task<Ok<SaleProductResponse>> ProcessSale(
+    public static async Task<Ok<SaleProductResponse>> SaleProduct(
         [FromBody] SaleProductRequest request,
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
-        var commandInput = ProductHandlersMapper.ToProcessSaleCommandInput(request);
+        var commandInput = ProductHandlersMapper.ToSaleProductCommandInput(request);
         var command = SaleProductCommand.Create(commandInput);
 
         var result = await mediator.Send(command, cancellationToken);
 
         return TypedResults.Ok(new SaleProductResponse
         {
-            Message = "Sale processed successfully",
+            Message = "Satış işlemi başarıyla tamamlandı",
             OrderId = result.OrderId,
-            Results = result.Results.Select(r => new SaleProductResultItem
+            Results = result.Items.Select(r => new SaleProductResultItem
             {
                 ProductId = r.ProductId,
                 ProductName = r.ProductName,
