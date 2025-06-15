@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MerchantNotificationService.Domain.Entities;
-using MerchantNotificationService.Infrastructure.Persistence;
+using MerchantNotificationService.Infrastructure.Persistance;
 
 namespace MerchantNotificationService.Infrastructure.Services;
 
