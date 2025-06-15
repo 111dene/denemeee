@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36203.30
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantNotificationService.Api", "MerchantNotificationService.Api\MerchantNotificationService.Api.csproj", "{C0009C4B-1A0A-40A7-8EF3-4B4203D7E77E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantNotificationService.Application", "MerchantNotificationService.Application\MerchantNotificationService.Application.csproj", "{5F73A8BF-D1FC-41DA-8DBC-6590E65F7A28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantNotificationService.Domain", "MerchantNotificationService.Domain\MerchantNotificationService.Domain.csproj", "{AAD16C7C-F383-4CBB-AAF5-639A6754B9ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantNotificationService.Infrastructure", "MerchantNotificationService.Infrastructure\MerchantNotificationService.Infrastructure.csproj", "{0151C6B4-53E8-459D-99C1-B92D5D34FDE3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C0009C4B-1A0A-40A7-8EF3-4B4203D7E77E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0009C4B-1A0A-40A7-8EF3-4B4203D7E77E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0009C4B-1A0A-40A7-8EF3-4B4203D7E77E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0009C4B-1A0A-40A7-8EF3-4B4203D7E77E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F73A8BF-D1FC-41DA-8DBC-6590E65F7A28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F73A8BF-D1FC-41DA-8DBC-6590E65F7A28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F73A8BF-D1FC-41DA-8DBC-6590E65F7A28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F73A8BF-D1FC-41DA-8DBC-6590E65F7A28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAD16C7C-F383-4CBB-AAF5-639A6754B9ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAD16C7C-F383-4CBB-AAF5-639A6754B9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAD16C7C-F383-4CBB-AAF5-639A6754B9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAD16C7C-F383-4CBB-AAF5-639A6754B9ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0151C6B4-53E8-459D-99C1-B92D5D34FDE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0151C6B4-53E8-459D-99C1-B92D5D34FDE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0151C6B4-53E8-459D-99C1-B92D5D34FDE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0151C6B4-53E8-459D-99C1-B92D5D34FDE3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3A46E91-0483-4FE9-AC16-55356170EAD8}
+	EndGlobalSection
+EndGlobal
