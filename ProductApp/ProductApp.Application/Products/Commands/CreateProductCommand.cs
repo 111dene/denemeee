@@ -55,7 +55,7 @@ public sealed class CreateProductCommandHandler : IRequestHandler<CreateProductC
             Stock = request.Input.Stock
         };
 
-        var product = Product.Create(createProductModel);//domain modelini oluuruyoruz. Product sınıfının Create metodu ile ProductCreateModel'i kullanarak yeni bir Product nesnesi oluşturuyoruz.
+        var product = Product.CreateProduct(createProductModel);//domain modelini oluuruyoruz. Product sınıfının Create metodu ile ProductCreateModel'i kullanarak yeni bir Product nesnesi oluşturuyoruz.
 
         await productRepository.CreateAsync(product, cancellationToken);//db ye kaydet için repositorye gönderiyoruz
         await unitOfWork.SaveChangesAsync(cancellationToken);//tüm değişiklikleri kaydet

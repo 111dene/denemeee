@@ -33,7 +33,7 @@ public static class ProductHandlersMapper
         };
     }
 
-    public static SaleProductCommandInput ToProcessSaleCommandInput(SaleProductRequest request)
+    public static SaleProductCommandInput ToSaleProductCommandInput(SaleProductRequest request)
     {
         return new SaleProductCommandInput()
         {

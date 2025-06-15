@@ -1,5 +1,6 @@
 ﻿using ProductApp.Domain.Aggregates.Product.Exceptions;
 using ProductApp.Domain.Aggregates.Product.ValueObject;
+using ProductApp.Domain.Aggregates.Product.Models;
 using ProductApp.Domain.Base;
 
 namespace ProductApp.Domain.Aggregates.Product;
@@ -27,7 +28,7 @@ public sealed class Product : IAggregateRoot
         Stock = stock;
     }
 
-    public static Product Create(CreateProductModel model)// Bu metot, dışarıdan gelen modelden yeni bir Product nesnesi oluşturur
+    public static Product CreateProduct(CreateProductModel model)// Bu metot, dışarıdan gelen modelden yeni bir Product nesnesi oluşturur
     {
         var price = new Money(model.Price);
         return new Product(model.Name, price, model.Stock);

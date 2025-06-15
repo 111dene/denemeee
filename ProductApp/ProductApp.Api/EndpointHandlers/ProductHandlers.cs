@@ -79,6 +79,7 @@ public static class ProductHandlers
 
         var result = await mediator.Send(command, cancellationToken);
 
+        // API Response mapping burada yapılıyor - doğru yer
         return TypedResults.Ok(new SaleProductResponse
         {
             Message = "Satış işlemi başarıyla tamamlandı",

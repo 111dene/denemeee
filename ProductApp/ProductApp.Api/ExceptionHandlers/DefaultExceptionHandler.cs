@@ -13,13 +13,13 @@ public class DefaultExceptionHandler : IExceptionHandler
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        logger.LogCritical("Default Exception Occurred Message: {Message}", exception.Message);
+        logger.LogCritical("Default Exception mesajı: {Message}", exception.Message);
 
         var problemDetails = new ProductProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
-            Title = "Internal Server Error",
-            Detail = "An unexpected error occurred",
+            Title = "Sunucu Hatası",
+            Detail = "Beklenmeyen bir hata oluştu",
             Code = "INTERNAL_SERVER_ERROR",
             Type = "https://tools.ietf.org/html/rfc7231"
         };
