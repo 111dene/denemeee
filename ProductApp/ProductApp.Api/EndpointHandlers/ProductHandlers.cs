@@ -58,7 +58,7 @@ public static class ProductHandlers
         });
     }
 
-    public static async Task<Ok<ProductStockCheckOutput>> CheckStock(
+    public static async Task<Ok<CheckProductStockOutput>> CheckStock(
         [FromRoute] Guid productId,
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
@@ -69,21 +69,21 @@ public static class ProductHandlers
         return TypedResults.Ok(result);
     }
 
-    public static async Task<Ok<ProcessSaleResponse>> ProcessSale(
-        [FromBody] ProcessSaleRequest request,
+    public static async Task<Ok<SaleProductResponse>> ProcessSale(
+        [FromBody] SaleProductRequest request,
         [FromServices] IMediator mediator,
         CancellationToken cancellationToken)
     {
         var commandInput = ProductHandlersMapper.ToProcessSaleCommandInput(request);
-        var command = ProcessSaleCommand.Create(commandInput);
+        var command = SaleProductCommand.Create(commandInput);
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return TypedResults.Ok(new ProcessSaleResponse
+        return TypedResults.Ok(new SaleProductResponse
         {
             Message = "Sale processed successfully",
             OrderId = result.OrderId,
-            Results = result.Results.Select(r => new SaleResultItem
+            Results = result.Results.Select(r => new SaleProductResultItem
             {
                 ProductId = r.ProductId,
                 ProductName = r.ProductName,

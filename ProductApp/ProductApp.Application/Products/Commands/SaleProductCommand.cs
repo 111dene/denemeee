@@ -2,27 +2,28 @@
 using MediatR;
 using ProductApp.Application.Common;
 using ProductApp.Application.Products.Inputs;
+using ProductApp.Domain.Aggregates.Product.DomainEvents;
 using ProductApp.Domain.Aggregates.Product.Exceptions;
 
 
 namespace ProductApp.Application.Products.Commands;
 
-public class ProcessSaleCommand : IRequest<ProcessSaleResult>
+public class SaleProductCommand : IRequest<SaleProductResult>
 {
-    public ProcessSaleCommandInput Input { get; }
+    public SaleProductCommandInput Input { get; }
 
-    private ProcessSaleCommand(ProcessSaleCommandInput input)
+    private SaleProductCommand(SaleProductCommandInput input)
     {
         Input = input;
     }
 
-    public static ProcessSaleCommand Create(ProcessSaleCommandInput input)
+    public static SaleProductCommand Create(SaleProductCommandInput input)
     {
-        return new ProcessSaleCommand(input);
+        return new SaleProductCommand(input);
     }
 }
 
-public class ProcessSaleResult
+public class SaleProductResult
 {
     public string OrderId { get; set; }
     public List<SaleItem> Results { get; set; } = new();
@@ -36,13 +37,13 @@ public class SaleItem
     public int RemainingStock { get; set; }
 }
 
-public sealed class ProcessSaleCommandHandler : IRequestHandler<ProcessSaleCommand, ProcessSaleResult>
+public sealed class SaleProductCommandHandler : IRequestHandler<SaleProductCommand, SaleProductResult>
 {
     private readonly IUnitOfWork unitOfWork;
     private readonly IProductReadRepository productReadRepository;
     private readonly IPublishEndpoint publishEndpoint;
 
-    public ProcessSaleCommandHandler(
+    public SaleProductCommandHandler(
         IUnitOfWork unitOfWork,
         IProductReadRepository productReadRepository,
         IPublishEndpoint publishEndpoint)
@@ -52,9 +53,9 @@ public sealed class ProcessSaleCommandHandler : IRequestHandler<ProcessSaleComma
         this.publishEndpoint = publishEndpoint;
     }
 
-    public async Task<ProcessSaleResult> Handle(ProcessSaleCommand request, CancellationToken cancellationToken)
+    public async Task<SaleProductResult> Handle(SaleProductCommand request, CancellationToken cancellationToken)
     {
-        var result = new ProcessSaleResult
+        var result = new SaleProductResult
         {
             OrderId = request.Input.OrderId
         };
@@ -85,7 +86,7 @@ public sealed class ProcessSaleCommandHandler : IRequestHandler<ProcessSaleComma
             });
 
             // Stock düştü eventi yayınla
-            var stockReducedEvent = new StockReducedEvent
+            var stockReducedEvent = new ReduceStockEvent
             {
                 ProductId = product.Id,
                 ProductName = product.Name,

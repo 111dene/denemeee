@@ -34,12 +34,12 @@ public static class ProductHandlersMapper
         };
     }
 
-    public static ProductSaleCommandInput ToProcessSaleCommandInput(ProcessSaleRequest request)
+    public static SaleProductCommandInput ToProcessSaleCommandInput(SaleProductRequest request)
     {
-        return new ProcessSaleCommandInput
+        return new SaleProductCommandInput()
         {
             OrderId = request.OrderId,
-            Items = request.Items.Select(i => new SaleItemInput
+            Items = request.Items.Select(i => new SaleProductInput()
             {
                 ProductId = i.ProductId,
                 Quantity = i.Quantity

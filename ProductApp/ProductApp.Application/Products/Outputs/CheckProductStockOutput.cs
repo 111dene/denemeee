@@ -1,6 +1,6 @@
 ﻿namespace ProductApp.Application.Products.Outputs;
 
-public class ProductStockCheckOutput
+public class CheckProductStockOutput
 {
     public Guid ProductId { get; set; }
     public bool Exists { get; set; }

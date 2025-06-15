@@ -4,7 +4,7 @@ using ProductApp.Application.Products.Outputs;
 
 namespace ProductApp.Application.Products.Queries;
 
-public sealed class CheckProductStockQuery : IRequest<ProductStockCheckOutput>
+public sealed class CheckProductStockQuery : IRequest<CheckProductStockOutput>
 {
     public Guid ProductId { get; }
 
@@ -19,7 +19,7 @@ public sealed class CheckProductStockQuery : IRequest<ProductStockCheckOutput>
     }
 }
 
-public sealed class ProductStockCheckQueryHandler : IRequestHandler<CheckProductStockQuery, ProductStockCheckOutput>
+public sealed class ProductStockCheckQueryHandler : IRequestHandler<CheckProductStockQuery, CheckProductStockOutput>
 {
     
     private readonly IProductReadRepository productReadRepository;
@@ -31,13 +31,13 @@ public sealed class ProductStockCheckQueryHandler : IRequestHandler<CheckProduct
         this.productReadRepository = productReadRepository;
     }
 
-    public async Task<ProductStockCheckOutput> Handle(CheckProductStockQuery request, CancellationToken cancellationToken)
+    public async Task<CheckProductStockOutput> Handle(CheckProductStockQuery request, CancellationToken cancellationToken)
     {
         var product = await productReadRepository.GetByIdAsync(request.ProductId, cancellationToken);
         
         if (product == null)
         {
-            return new ProductStockCheckOutput
+            return new CheckProductStockOutput
             {
                 ProductId = request.ProductId,
                 Exists = false,
@@ -46,7 +46,7 @@ public sealed class ProductStockCheckQueryHandler : IRequestHandler<CheckProduct
             };
         }
 
-        return new ProductStockCheckOutput
+        return new CheckProductStockOutput
         {
             ProductId = request.ProductId,
             Exists = true,
